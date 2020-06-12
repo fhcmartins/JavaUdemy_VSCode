@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import entities.enums.WorkerLevel;
@@ -63,8 +64,47 @@ public Worker(String name, WorkerLevel level, Double baseSalary, Department depa
         return contracts;
     }
 
+
+    /* Não podemos deixar setContracts ativado, pois essa lista não pode ser trocada.
+    *  A lista começa vazia, mas depois outros contratos serao inseridos ou removidos,
+    *  mas somente pelos métodos abaixo. Todos os contratos associados ao trabalhador.
+    */
+
+    /*
+    Aqui a lista antiga será trocada por uma nova. Por isso esse método não pode ser implementado.  
     public void setContracts(List<HourContract> contracts){
         this.contracts = contracts;
     }
+    */
+
+    // *************** Adding methods ********************
+
+    public void addContracts(HourContract contract){
+        contracts.add(contract);
+    }
+
+    public void removeContract(HourContract contract){
+        contracts.remove(contract);
+    }
+
+    public Double income(int year, int month){
+        double sum = baseSalary;
+
+        Calendar cal = Calendar.getInstance();
+        
+        for (HourContract c : contracts){
+            cal.setTime(c.getDate()); // Setting date of c calendar
+            
+            // Extract Year and Month of c contract
+            int c_year = cal.get(Calendar.YEAR);
+            int c_mount = 1 + cal.get(Calendar.MONTH);
+            
+            if(year == c_year && month == c_mount){
+                sum += c.totalValue();
+            }
+        }
+        return sum;
+    }
+    
 
 }
